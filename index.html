@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Check route</title>
+
+  <link rel="icon" href="/fav icon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
+  <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&amp;apikey=37f48201-837b-4885-9dd9-08c6a5ed9b24" type="text/javascript"></script>
+
+  <script lang="javascript" src="libs/xlsx.full.min.js"></script>
+
+  <script src="js/func.js" type="module"></script>
+  <script src="js/excel.js" type="module"></script>
+  <script src="js/main.js" type="module"></script>
+  <script
+          src="https://code.jquery.com/jquery-3.6.0.min.js"
+          integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+          crossorigin="anonymous"></script>
+
+  <style>
+    body, html {
+      padding: 0;
+      margin: 0;
+      width: 100%;
+      height: 100%;
+    }
+    #map {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+
+<body>
+<div style="display: flex; flex-direction: column; width: 100%; height: 100%">
+  <div style="flex: 0 0 70px; display: flex; align-items: center; text-align: center">
+    <div style="flex: 1 1 1px">
+      <input id="excelBaseUploadButton" value="Excel база" type="file">
+    </div>
+    <div style="flex: 1 1 1px">
+      <input id="excelRouteUploadButton" value="Excel точки маршрута" type="file">
+    </div>
+    <div style="flex: 1 1 1px">
+      <input value="5" type="number" >
+    </div>
+    <div style="flex: 1 1 1px">
+      <input id="startButton" value="Запуск расчёта" type="button">
+    </div>
+    <div style="flex: 1 1 1px">
+      <input id="clearButton" value="Очистить" type="button">
+    </div>
+  </div>
+  <div style="display: flex; flex: 1 1 1px">
+    <div style="flex: 1 1 1px">
+      <div id="coord"></div>
+    </div>
+    <div style="flex: 4 1 1px;" id="map"></div>
+  </div>
+</div>
+
+
+</body>
+
+</html>
