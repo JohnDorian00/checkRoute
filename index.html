@@ -5,8 +5,11 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>Check route</title>
 
-  <link rel="icon" href="/fav icon.ico" type="image/x-icon" />
-  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
 
   <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&amp;apikey=37f48201-837b-4885-9dd9-08c6a5ed9b24" type="text/javascript"></script>
 
@@ -36,6 +39,8 @@
 
 <body>
 <div style="display: flex; flex-direction: column; width: 100%; height: 100%">
+
+<!--  Menu-->
   <div style="flex: 0 0 70px; display: flex; align-items: center; text-align: center">
     <div style="flex: 1 1 1px">
       <input id="excelBaseUploadButton" value="Excel база" type="file">
@@ -53,10 +58,18 @@
       <input id="clearButton" value="Очистить" type="button">
     </div>
   </div>
+
+
   <div style="display: flex; flex: 1 1 1px">
-    <div style="flex: 1 1 1px">
-      <div id="coord"></div>
+
+    <div style="flex: 0 0 300px; position: relative;">
+
+        <div id="list" class="list-group" style="height: 100%; width: 100%; overflow: auto;  position: absolute; left: 0; top: 0;">
+
+        </div>
+
     </div>
+
     <div style="flex: 4 1 1px;" id="map"></div>
   </div>
 </div>

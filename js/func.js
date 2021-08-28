@@ -25,3 +25,27 @@ export async function getGeoCoordinates(address) {
             });
     })
 }
+
+// Создать html код элемента списка
+export function createItemsHtml(points) {
+    let htmlCode = "";
+
+    points.forEach((item) => {
+
+        try {
+            htmlCode += createItemHtml(item);
+        } catch (e) {
+            console.error("Ошибка составления html кода списка: ", e)
+        }
+    })
+
+    return htmlCode
+
+
+    function createItemHtml(item) {
+        if (!item.data) item.data = "Неизвестно";
+        if (!item.pointsAmount) item.pointsAmount = "неизвестно";
+        if (item.id !== 0 && !item.id) throw "отсутствует id у записи в routePoints";
+        return '<a href="#" id="elem' + item.id + '" class="list-group-item list-group-item-action" aria-current="true"><h5 class="mb-1">' + (item.data).toLocaleDateString() +'</h5><small> Количество точек: ' + (item.pointsAmount).toString() + '</small></a>\n'
+    }
+}

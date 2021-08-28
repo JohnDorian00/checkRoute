@@ -1,4 +1,4 @@
-import {getGeoCoordinates} from "./func.js";
+import {getGeoCoordinates, createItemsHtml} from "./func.js";
 import {handleFile} from "./excel.js";
 
 let myMap, objectManagerBase, objectManagerRoute, idList = [],
@@ -7,7 +7,8 @@ let myMap, objectManagerBase, objectManagerRoute, idList = [],
 
 // Jquery
 let excelBaseUploadButton = $("#excelBaseUploadButton"),
-    excelRouteUploadButton = $("#excelRouteUploadButton")
+    excelRouteUploadButton = $("#excelRouteUploadButton"),
+    list = $("#list");
 
 // Дождёмся загрузки API и готовности DOM.
 ymaps.ready(initMap);
@@ -42,21 +43,34 @@ excelBaseUploadButton.change(async (e)=>{
 excelRouteUploadButton.change(async (e)=>{
     clearRoutePoints();
 
-    let tmp = await handleFile(e) || [];
+    let tmp = await handleFile(e) || [], id = 0;
 
     for (const t of tmp) {
-        let address, coord;
+        let address, coord, data;
         try {
+            data = new Date(1900,0,0);
+            data.setDate(data.getDate() + parseInt(t["Дата"]) - 1);
             address = t["Адрес"] + " " + t["Город"];
             coord = await getGeoCoordinates(address);
         } catch (e) {
             console.warn("Координаты для адреса \"" + address + "\" не найдены");
         }
-        routeAddresses.push({"address" : address, "coord": coord})
+        routeAddresses.push({"id": id, "data": data, "address" : address, "coord": coord});
+        id++;
     }
     tmp = undefined;
+    id = undefined;
 
-    addPointsToMap(routeAddresses, "route");
+    // addPointsToMap(routeAddresses, "route");
+
+    let htmlCode = createItemsHtml(routeAddresses);
+    list.append(htmlCode);
+
+    for (let i = 0; i < routeAddresses.length; i++) {
+        $("#elem" + i).click(() => {
+            applyRouteDay(i);
+        })
+    }
 
     console.log("Добавлены адреса маршрута : ", routeAddresses)
 })
@@ -82,6 +96,10 @@ $("#clearButton").click(async ()=>{
     clearAllPoints();
 })
 
+
+function applyRouteDay(id) {
+    console.log(routeAddresses[id])
+}
 
 // Инициализация карты
 function initMap() {
@@ -122,6 +140,10 @@ function clearBasePoints() {
 
 // Очистка точек маршрута
 function clearRoutePoints() {
+    for (let i = 0; i < routeAddresses.length; i++) {
+        $("#elem" + i).off("click");
+    }
+    list.empty();
     routeAddresses = [];
     objectManagerRoute.removeAll();
 }
