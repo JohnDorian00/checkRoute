@@ -13,9 +13,6 @@ let excelBaseUploadButton = $("#excelBaseUploadButton"),
 // Дождёмся загрузки API и готовности DOM.
 ymaps.ready(initMap);
 
-let addresses = ["озёрная д. 9 москва", "бориса пастернака 13 москва"]
-
-
 // Загрузка экселя с точками базы и их отрисовка на карте
 excelBaseUploadButton.change(async (e)=>{
     clearBasePoints();
@@ -25,7 +22,11 @@ excelBaseUploadButton.change(async (e)=>{
     for (const t of tmp) {
         let address, coord;
         try {
-            address = t["Адрес"] + " " + t["Город"];
+            if (t["Город"]) {
+                address = t["Адрес"] + " " + t["Город"];
+            } else {
+                address = t["Адрес"];
+            }
             coord = await getGeoCoordinates(address);
         } catch (e) {
             console.warn("Координаты для адреса \"" + address + "\" не найдены");
@@ -43,25 +44,9 @@ excelBaseUploadButton.change(async (e)=>{
 excelRouteUploadButton.change(async (e)=>{
     clearRoutePoints();
 
-    let tmp = await handleFile(e) || [], id = 0;
+    routeAddresses = await groupOfData(await handleFile(e) || []);
 
-    for (const t of tmp) {
-        let address, coord, data;
-        try {
-            data = new Date(1900,0,0);
-            data.setDate(data.getDate() + parseInt(t["Дата"]) - 1);
-            address = t["Адрес"] + " " + t["Город"];
-            coord = await getGeoCoordinates(address);
-        } catch (e) {
-            console.warn("Координаты для адреса \"" + address + "\" не найдены");
-        }
-        routeAddresses.push({"id": id, "data": data, "address" : address, "coord": coord});
-        id++;
-    }
-    tmp = undefined;
-    id = undefined;
-
-    // addPointsToMap(routeAddresses, "route");
+    if (routeAddresses.length < 1) return
 
     let htmlCode = createItemsHtml(routeAddresses);
     list.append(htmlCode);
@@ -72,32 +57,96 @@ excelRouteUploadButton.change(async (e)=>{
         })
     }
 
+    applyRouteDay(1);
+
     console.log("Добавлены адреса маршрута : ", routeAddresses)
 })
 
 // Запуск авторасчёта совпадения точек маршрута и базы
-$("#startButton").click(async ()=>{
-    let points = []
-    try {
-        for (const address of addresses) {
-            points.push({
-                "address" : address,
-                "coord": await getGeoCoordinates(address)
-            })
-        }
-        addPointsToMap(points, "base");
-    } catch (address) {
-        console.warn("Координаты для адреса \"" + address + "\" не найдены")
-    }
-})
+// $("#startButton").click(async ()=>{
+//     let points = []
+//     try {
+//         for (const address of addresses) {
+//             points.push({
+//                 "address" : address,
+//                 "coord": await getGeoCoordinates(address)
+//             })
+//         }
+//         addPointsToMap(points, "base");
+//     } catch (address) {
+//         console.warn("Координаты для адреса \"" + address + "\" не найдены")
+//     }
+// })
 
 // Очистка карты, экселей, внутренних переменных
 $("#clearButton").click(async ()=>{
     clearAllPoints();
 })
 
+// Группировка данных по датам
+async function groupOfData(arr) {
+    return new Promise(async (resolve, reject)=>{
+        let tmp = [];
 
+        for (const t of arr) {
+            let address, coord, data;
+            try {
+                data = new Date(1900,0,0);
+                data.setDate(data.getDate() + parseInt(t["Дата"]) - 1);
+                data = data.toLocaleDateString();
+
+                if (t["Город"]) {
+                    address = t["Адрес"] + " " + t["Город"];
+                } else {
+                    address = t["Адрес"];
+                }
+
+                coord = await getGeoCoordinates(address);
+            } catch (e) {
+                console.warn("Координаты для адреса \"" + address + "\" не найдены");
+            }
+            tmp.push({"data": data, "address" : address, "coord": coord});
+        }
+        tmp = sortData(tmp);
+        tmp.unshift({id: 0, arr: []})
+
+        resolve(tmp);
+    })
+
+    function sortData(data) {
+        let sortedData = [], dates = new Set(), id = 0;
+
+        for (const d of data) {
+            dates.add(d.data);
+        }
+
+        for (const day of dates) {
+            sortedData.push({"id": id + 1, "data": day, arr: []});
+
+            for (const d of data) {
+                if (d.data === day) {
+                    sortedData[id].arr.push(d);
+                }
+            }
+            id++;
+        }
+        id = undefined;
+
+        return sortedData;
+    }
+}
+
+// Применить точки маршрута на карту
 function applyRouteDay(id) {
+    objectManagerRoute.removeAll();
+    addPointsToMap(routeAddresses[id].arr, "route");
+
+    for (let i = 0; i < routeAddresses.length; i++) {
+        $("#elem" + i).removeClass("active")
+    }
+
+    $("#elem" + id).addClass("active")
+
     console.log(routeAddresses[id])
 }
 
@@ -188,7 +237,7 @@ function addPointsToMap(points, type) {
                 "balloonContentHeader": "",
                 "balloonContentBody": item.address,
                 "balloonContentFooter": "",
-                "hintContent": "Подсказка"
+                "hintContent": item.address
             }
         })
         idList.push(id++);

@@ -41,11 +41,14 @@ export function createItemsHtml(points) {
 
     return htmlCode
 
-
     function createItemHtml(item) {
         if (!item.data) item.data = "Неизвестно";
-        if (!item.pointsAmount) item.pointsAmount = "неизвестно";
+        item.pointsAmount = item.arr.length;
+
+        if (item.id === 0) return '<a style="cursor: pointer" id="elem' + item.id + '" class="list-group-item list-group-item-action" aria-current="true"><h5 class="mb-1"> - </h5><small>Показать только точки базы</small></a>\n'
+
         if (item.id !== 0 && !item.id) throw "отсутствует id у записи в routePoints";
-        return '<a href="#" id="elem' + item.id + '" class="list-group-item list-group-item-action" aria-current="true"><h5 class="mb-1">' + (item.data).toLocaleDateString() +'</h5><small> Количество точек: ' + (item.pointsAmount).toString() + '</small></a>\n'
+
+        return '<a style="cursor: pointer" id="elem' + item.id + '" class="list-group-item list-group-item-action" aria-current="true"><h5 class="mb-1">' + item.data +'</h5><small> Количество точек: ' + (item.pointsAmount).toString() + '</small></a>\n'
     }
 }

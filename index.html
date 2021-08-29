@@ -41,21 +41,26 @@
 <div style="display: flex; flex-direction: column; width: 100%; height: 100%">
 
 <!--  Menu-->
-  <div style="flex: 0 0 70px; display: flex; align-items: center; text-align: center">
-    <div style="flex: 1 1 1px">
-      <input id="excelBaseUploadButton" value="Excel база" type="file">
+  <div style="flex: 0 0 70px; display: flex; align-items: center; text-align: center; margin: 10px 15px 2px;">
+    <div style="flex: 1 1 1px; margin-right: 10px">
+        <label for="excelBaseUploadButton" class="form-label">Excel база</label>
+        <input class="form-control" type="file" id="excelBaseUploadButton">
+<!--      <input id="excelBaseUploadButton" value="Excel база" type="file">-->
     </div>
     <div style="flex: 1 1 1px">
-      <input id="excelRouteUploadButton" value="Excel точки маршрута" type="file">
+        <label for="excelRouteUploadButton" class="form-label">Excel точки маршрута</label>
+        <input class="form-control" type="file" id="excelRouteUploadButton">
+<!--      <input id="excelRouteUploadButton" value="Excel точки маршрута" type="file">-->
     </div>
+<!--    <div style="flex: 1 1 1px">-->
+<!--      <input value="5" type="number" >-->
+<!--    </div>-->
+<!--    <div style="flex: 1 1 1px">-->
+<!--      <input id="startButton" value="Запуск расчёта" type="button">-->
+<!--    </div>-->
     <div style="flex: 1 1 1px">
-      <input value="5" type="number" >
-    </div>
-    <div style="flex: 1 1 1px">
-      <input id="startButton" value="Запуск расчёта" type="button">
-    </div>
-    <div style="flex: 1 1 1px">
-      <input id="clearButton" value="Очистить" type="button">
+        <button id="clearButton" type="button" class="btn btn-outline-danger">Очистить</button>
+<!--      <input id="clearButton" value="Очистить" type="button">-->
     </div>
   </div>
 
