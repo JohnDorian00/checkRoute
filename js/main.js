@@ -88,6 +88,8 @@ async function groupOfData(arr) {
     return new Promise(async (resolve, reject)=>{
         let tmp = [];
 
+        arr[1] = arr[15];
+
         for (const t of arr) {
             let address, coord, data;
             try {
@@ -107,6 +109,17 @@ async function groupOfData(arr) {
             }
             tmp.push({"data": data, "address" : address, "coord": coord});
         }
+
+        tmp.sort((a,b)=>{
+            if ( a.data < b.data ){
+                return -1;
+            }
+            if ( a.data > b.data ){
+                return 1;
+            }
+            return 0;
+        })
+
         tmp = sortData(tmp);
         tmp.unshift({id: 0, arr: []})
 
